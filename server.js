@@ -1,10 +1,37 @@
 import express from "express";
 import fetch from "node-fetch";
+import cors from "cors";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
-app.get("/api/v1/movies/list", (req, res) => {
-  res.status(200).json({ success: true, message: "movies list is working!" });
+// Setting middleware
+app.use(cors());
+
+app.get("/api/v1/movies/list", async (req, res) => {
+  const url = `${process.env.BASE_URL}discover/movie?page=1&language=sv-SE&sort_by=popularity.desc`;
+  const options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      authorization: `Bearer ${process.env.TOKEN}`,
+    },
+  };
+  const response = await fetch(url, options);
+  if (response.status === 200) {
+    const result = await response.json();
+    res.status(200).json({
+      success: true,
+      message: "movies list is working!",
+      result,
+    });
+  } else if (response.status === 404) {
+    res
+      .status(404)
+      .json({ success: false, message: "Could not find any movies" });
+  }
 });
 
 app.get("/api/v1/movies/search/:query", (req, res) => {
@@ -20,6 +47,6 @@ app.get("/api/v1/movie/:id", (req, res) => {
     .json({ success: true, message: `movie is working! ${req.params.id}` });
 });
 
-const PORT = 3001 | process.env.PORT;
+const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => console.log("Server is running"));
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
