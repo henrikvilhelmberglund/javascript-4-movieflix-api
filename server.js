@@ -11,7 +11,8 @@ const app = express();
 app.use(cors());
 
 app.get("/api/v1/movies/list", async (req, res) => {
-  const url = `${process.env.BASE_URL}discover/movie?page=1&language=sv-SE&sort_by=popularity.desc`;
+  const page = req.query.page;
+  const url = `${process.env.BASE_URL}discover/movie?page=1&language=sv-SE&sort_by=popularity.desc&page=${page}`;
   const options = {
     method: "GET",
     headers: {
@@ -35,7 +36,8 @@ app.get("/api/v1/movies/list", async (req, res) => {
 });
 
 app.get("/api/v1/movies/search/:query", async (req, res) => {
-  const url = `${process.env.BASE_URL}search/movie?query=${req.params.query}&language=sv-SE`;
+  const page = req.query.page;
+  const url = `${process.env.BASE_URL}search/movie?query=${req.params.query}&language=sv-SE&page=${page}`;
   const options = {
     method: "GET",
     headers: {
