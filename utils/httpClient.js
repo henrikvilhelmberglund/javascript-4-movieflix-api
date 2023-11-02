@@ -38,6 +38,4 @@ export const fetchData = async (endpoint, page = 1, query = null) => {
   }
 };
 
-const httpClient = fetchData;
-
-export default httpClient;
+export default fetchData;
